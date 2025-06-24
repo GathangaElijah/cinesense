@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import SearchBar from "../components/SearchBar/SearchBar";
 import MovieCard from "../components/MovieCard/MovieCard";
 import { searchTMDB } from "../services/tmdb";
+import { searchOMDB } from "../services/omdb";
 import "./HomePage.css";
 
 const Home = () => {
@@ -30,8 +31,11 @@ const Home = () => {
       setLoading(true);
       setError("")
       try {
-      const data = await searchTMDB(debouncedQuery, page);
-      console.log("Fetched data:", data);
+      let data = await searchTMDB(debouncedQuery, page);
+      if (data.length === 0) {
+        console.warn("TMDB returned empty or failed, trying OMDB...");
+        data = await searchOMDB(debouncedQuery);
+      }
       setResults(data);
       } catch (err) {
         console.error("API fetch error:", err);
@@ -83,8 +87,8 @@ const Home = () => {
           <p className="no-results">No results found.</p>
         )}
         {debouncedQuery
-          ? results.map((item) => <MovieCard key={item.id} item={item} />)
-          : trending.map((item) => <MovieCard key={item.id} item={item} />)
+          ? results.map((item) => <MovieCard key={item.id || item.imdb} item={item} />)
+          : trending.map((item) => <MovieCard key={item.id || item.imdb} item={item} />)
         }
       </div>
 
