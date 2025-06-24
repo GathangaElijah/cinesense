@@ -1,20 +1,8 @@
-import { useState } from 'react'
-import SearchBar from './components/SearchBar';
+import React from "react";
+import Home from "./pages/HomePage";
 
-function App() {
-  const [query, setQuery] = useState("")
+const App = () => {
+  return <Home />;
+};
 
-   const handleChange = (e) => {
-    setQuery(e.target.value);
-  };
-
-  return (
-     <div>
-      <h1 style={{ textAlign: "center" }}>Movie / TV Show Discovery</h1>
-      <SearchBar value={query} onChange={handleChange} />
-      <p style={{ textAlign: "center" }}>Search query: {query}</p>
-    </div>
-  );
-}
-
-export default App
+export default App;
