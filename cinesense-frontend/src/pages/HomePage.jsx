@@ -3,6 +3,8 @@ import SearchBar from "../components/SearchBar/SearchBar";
 import MovieCard from "../components/MovieCard/MovieCard";
 import { searchTMDB } from "../services/tmdb";
 import { searchOMDB } from "../services/omdb";
+import { useWatchlist } from "../hooks/useWatchlist";
+
 import "./HomePage.css";
 
 const Home = () => {
@@ -14,6 +16,8 @@ const Home = () => {
   const [trending, setTrending] = useState([]);
   const [page, setPage] = useState(1);
   const [maxPages, setMaxPages] = useState(1);
+  const { watchlist, add, remove, toggleWatched } = useWatchlist();
+
 
   const handleNext = () => {
     if (page < maxPages) {
@@ -94,7 +98,7 @@ const Home = () => {
     };
   
     fetchTrending();
-  }, [page]);
+  }, []);
 
   return (
     <div>
@@ -109,8 +113,26 @@ const Home = () => {
           <p className="no-results">No results found.</p>
         )}
         {debouncedQuery
-          ? results.map((item) => <MovieCard key={item.id || item.imdb} item={item} />)
-          : trending.map((item) => <MovieCard key={item.id || item.imdb} item={item} />)
+          ? results.map((item) => <MovieCard 
+          key={item.id || item.imdb} 
+          item={item} 
+          onAdd={() => add(item)}
+          onRemove={() => remove(item.id || item.imdbID)}
+          onToggleWatched={() => toggleWatched(item.id || item.imdbID)}
+          isInWatchlist={!!watchlist.find(
+            (w) => w.id === item.id || w.imdbID === item.imdbID
+          )}
+          />)
+          : trending.map((item) => <MovieCard 
+          key={item.id || item.imdb} 
+          item={item} 
+          onAdd={() => add(item)}
+          onRemove={() => remove(item.id || item.imdbID)}
+          onToggleWatched={() => toggleWatched(item.id || item.imdbID)}
+          isInWatchlist={!!watchlist.find(
+            (w) => w.id === item.id || w.imdbID === item.imdbID
+          )}
+          />)
         }
       </div>
 
