@@ -1,5 +1,21 @@
 .movie-card {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.movie-card img {
+  width: 100%;
+  height: auto;  /* Let the height adjust dynamically */
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.movie-card p {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 0.9rem;
 }
 
 .movie-poster {
@@ -17,4 +33,12 @@
 .movie-title {
   margin-top: 8px;
   font-size: 14px;
+}
+
+.ratings {
+  font-size: 0.9em;
+  color: #555;
+}
+.ratings p {
+  margin: 2px 0;
 }
