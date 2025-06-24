@@ -51,7 +51,7 @@ const Home = () => {
       let data = await searchTMDB(debouncedQuery, page);
       let totalPages = null;
 
-      if (data.length > 0) {
+      if (data.results && data.results.length > 0) {
         totalPages = data.totalPages;
         console.log("TMDB total pages:", totalPages);
       } else {
@@ -102,49 +102,59 @@ const Home = () => {
 
   return (
     <div>
+    <div className="search-container">
       <h1 className="home-title">Movie / TV Show Discovery</h1>
       <SearchBar value={query} onChange={(e) => setQuery(e.target.value)} />
-
-      {loading && <p className="loading-message">Loading...</p>}
-      {error && <p className="error-message">{error}</p>}
-
-      <div className="movie-grid">
-        {!loading && !error && results.length === 0 && debouncedQuery && (
-          <p className="no-results">No results found.</p>
-        )}
-        {debouncedQuery
-          ? results.map((item) => <MovieCard 
-          key={item.id || item.imdb} 
-          item={item} 
-          onAdd={() => add(item)}
-          onRemove={() => remove(item.id || item.imdbID)}
-          onToggleWatched={() => toggleWatched(item.id || item.imdbID)}
-          isInWatchlist={!!watchlist.find(
-            (w) => w.id === item.id || w.imdbID === item.imdbID
-          )}
-          />)
-          : trending.map((item) => <MovieCard 
-          key={item.id || item.imdb} 
-          item={item} 
-          onAdd={() => add(item)}
-          onRemove={() => remove(item.id || item.imdbID)}
-          onToggleWatched={() => toggleWatched(item.id || item.imdbID)}
-          isInWatchlist={!!watchlist.find(
-            (w) => w.id === item.id || w.imdbID === item.imdbID
-          )}
-          />)
-        }
-      </div>
-
-      {results.length > 0 && (
-      <div className="pagination">
-        <button onClick={handlePrevious} disabled={page === 1}>Previous</button>
-      <button onClick={handleNext} disabled={page >= maxPages}>Next</button>
-      </div>
-)}
-
-
     </div>
+
+    {debouncedQuery === "" && <h2 className="section-title">Trending Now</h2>}
+
+    {loading && <p className="loading-message">Loading...</p>}
+    {error && <p className="error-message">{error}</p>}
+
+    <div className="movie-grid">
+      {!loading && !error && results.length === 0 && debouncedQuery && (
+        <p className="no-results">No results found.</p>
+      )}
+
+      {debouncedQuery
+        ? results.map((item) => (
+            <MovieCard
+              key={item.id || item.imdbID}
+              item={item}
+              onAdd={() => add(item)}
+              onRemove={() => remove(item.id || item.imdbID)}
+              onToggleWatched={() => toggleWatched(item.id || item.imdbID)}
+              isInWatchlist={!!watchlist.find(
+                (w) => w.id === item.id || w.imdbID === item.imdbID
+              )}
+            />
+          ))
+        : trending.map((item) => (
+            <MovieCard
+              key={item.id || item.imdbID}
+              item={item}
+              onAdd={() => add(item)}
+              onRemove={() => remove(item.id || item.imdbID)}
+              onToggleWatched={() => toggleWatched(item.id || item.imdbID)}
+              isInWatchlist={!!watchlist.find(
+                (w) => w.id === item.id || w.imdbID === item.imdbID
+              )}
+            />
+          ))}
+    </div>
+
+    {results.length > 0 && (
+      <div className="pagination">
+        <button onClick={handlePrevious} disabled={page === 1}>
+          Previous
+        </button>
+        <button onClick={handleNext} disabled={page >= maxPages}>
+          Next
+        </button>
+      </div>
+    )}
+  </div>
   );
 };
 
