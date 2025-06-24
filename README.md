@@ -1,4 +1,3 @@
-
 # CineSense 🎬
 
 CineSense is a movie and TV show discovery platform that integrates with TMDB and OMDB APIs.  
