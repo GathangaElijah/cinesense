@@ -13,6 +13,19 @@ const Home = () => {
   const [error, setError] = useState("");
   const [trending, setTrending] = useState([]);
   const [page, setPage] = useState(1);
+  const [maxPages, setMaxPages] = useState(1);
+
+  const handleNext = () => {
+    if (page < maxPages) {
+      setPage((prev) => prev + 1);
+    }
+  };
+  
+  const handlePrevious = () => {
+    if (page > 1) {
+      setPage((prev) => prev - 1);
+    }
+  };
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -32,11 +45,20 @@ const Home = () => {
       setError("")
       try {
       let data = await searchTMDB(debouncedQuery, page);
-      if (data.length === 0) {
-        console.warn("TMDB returned empty or failed, trying OMDB...");
-        data = await searchOMDB(debouncedQuery);
+      let totalPages = null;
+
+      if (data.length > 0) {
+        totalPages = data.totalPages;
+        console.log("TMDB total pages:", totalPages);
+      } else {
+        console.warn("TMDB empty, trying OMDB...");
+        data = await searchOMDB(debouncedQuery, page);
+        // Similarly, have searchOMDB return { results, totalPages }
+        totalPages = data.totalPages;
+        console.log("OMDB total pages:", totalPages);
       }
-      setResults(data);
+      setResults(data.results || data);
+      setMaxPages(totalPages);
       } catch (err) {
         console.error("API fetch error:", err);
         setError("Something went wrong. Please try again later.");
@@ -93,20 +115,10 @@ const Home = () => {
       </div>
 
       {results.length > 0 && (
-  <div className="pagination">
-    <button 
-      onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-      disabled={page === 1}
-    >
-      Previous
-    </button>
-    <span>Page {page}</span>
-    <button 
-      onClick={() => setPage((prev) => prev + 1)}
-    >
-      Next
-    </button>
-  </div>
+      <div className="pagination">
+        <button onClick={handlePrevious} disabled={page === 1}>Previous</button>
+      <button onClick={handleNext} disabled={page >= maxPages}>Next</button>
+      </div>
 )}
 
 
