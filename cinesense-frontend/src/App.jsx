@@ -4,6 +4,7 @@ import Home from "./pages/HomePage";
 import DetailPage from "./pages/DetailPage";
 
 const App = () => {
+  return (
   <Router>
     <Routes>
       <Route path="/" element={<Home />} />
@@ -11,6 +12,7 @@ const App = () => {
     </Routes>
 
   </Router>
+  );
 };
 
 export default App;
