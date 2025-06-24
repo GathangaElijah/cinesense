@@ -1,0 +1,15 @@
+.home-title {
+  text-align: center;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.no-results {
+  text-align: center;
+  color: #888;
+}
