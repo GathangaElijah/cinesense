@@ -45,6 +45,31 @@ const Home = () => {
     fetchData();
   }, [debouncedQuery]);
 
+  useEffect(() => {
+    const fetchTrending = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const response = await fetch(
+          `https://api.themoviedb.org/3/trending/all/day?api_key=${import.meta.env.VITE_CINESENSE_TMDB_API_KEY}`
+        );
+        if (!response.ok) {
+          throw new Error(`TMDB trending error: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Fetched trending data:", data.results);
+        setTrending(data.results || []);
+      } catch (err) {
+        console.error("Trending fetch error:", err);
+        setError("Failed to load trending content.");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchTrending();
+  }, []);
+
   return (
     <div>
       <h1 className="home-title">Movie / TV Show Discovery</h1>
