@@ -30,7 +30,7 @@ const Home = () => {
       setLoading(true);
       setError("")
       try {
-      const data = await searchTMDB(debouncedQuery);
+      const data = await searchTMDB(debouncedQuery, page);
       console.log("Fetched data:", data);
       setResults(data);
       } catch (err) {
@@ -43,7 +43,7 @@ const Home = () => {
     };
 
     fetchData();
-  }, [debouncedQuery]);
+  }, [debouncedQuery, page]);
 
   useEffect(() => {
     const fetchTrending = async () => {
@@ -68,7 +68,7 @@ const Home = () => {
     };
   
     fetchTrending();
-  }, []);
+  }, [page]);
 
   return (
     <div>
@@ -79,7 +79,7 @@ const Home = () => {
       {error && <p className="error-message">{error}</p>}
 
       <div className="movie-grid">
-      {!loading && !error && results.length === 0 && debouncedQuery && (
+        {!loading && !error && results.length === 0 && debouncedQuery && (
           <p className="no-results">No results found.</p>
         )}
         {debouncedQuery
@@ -87,6 +87,25 @@ const Home = () => {
           : trending.map((item) => <MovieCard key={item.id} item={item} />)
         }
       </div>
+
+      {results.length > 0 && (
+  <div className="pagination">
+    <button 
+      onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+      disabled={page === 1}
+    >
+      Previous
+    </button>
+    <span>Page {page}</span>
+    <button 
+      onClick={() => setPage((prev) => prev + 1)}
+    >
+      Next
+    </button>
+  </div>
+)}
+
+
     </div>
   );
 };
